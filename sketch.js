@@ -56,8 +56,8 @@ function draw() {
 
   // 再顯示標題，才不會被蓋掉
   textAlign(CENTER, TOP);
-  textSize(32);
-  textStyle(BOLD); // 設定粗體
+  textSize(36);
+  textFont('Microsoft JhengHei', 'bold'); // 設定字型與粗體
   fill(50, 50, 150);
   noStroke();
   text("淡江教育科技系", width / 2, 10);
