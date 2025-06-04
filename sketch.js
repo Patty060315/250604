@@ -47,19 +47,19 @@ function setup() {
 function draw() {
   background(220);
 
-  // 顯示標題
+  Engine.update(engine);
+  strokeWeight(2);
+  stroke(0);
+
+  // 先畫攝影機畫面
+  image(video, 0, 0, width, height);
+
+  // 再顯示標題，才不會被蓋掉
   textAlign(CENTER, TOP);
   textSize(32);
   fill(50, 50, 150);
   noStroke();
   text("淡江教育科技系", width / 2, 10);
-
-  Engine.update(engine);
-  strokeWeight(2);
-  stroke(0);
-
-  // Draw the webcam video
-  image(video, 0, 0, width, height);
 
   if (random() < 0.1) {
     circles.push(new Circle());
