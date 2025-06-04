@@ -73,9 +73,9 @@ function draw() {
 
   // 更新與顯示字母球
   for (let i = letterBalls.length - 1; i >= 0; i--) {
-    letterBalls[i].update();
     letterBalls[i].display();
     if (letterBalls[i].offScreen()) {
+      letterBalls[i].removeFromWorld();
       letterBalls.splice(i, 1);
     }
   }
@@ -116,32 +116,37 @@ function gotHands(results) {
   hands = results;
 }
 
-// 新增 LetterBall 類別
+// 修改 LetterBall 類別，讓它用 Matter.js 物理引擎
 class LetterBall {
   constructor(x, y, letter) {
-    this.x = x;
-    this.y = y;
     this.letter = letter;
     this.r = 28;
-    this.vy = 0;
-    this.gravity = 0.5;
+    this.body = Bodies.circle(x, y, this.r, {
+      restitution: 0.7, // 彈力
+      friction: 0.1
+    });
+    World.add(engine.world, this.body);
     this.color = color(random(100,255), random(100,255), random(100,255));
   }
   update() {
-    this.vy += this.gravity;
-    this.y += this.vy;
+    // 不需要手動更新位置，Matter.js 會自動處理
   }
   display() {
+    let pos = this.body.position;
     fill(this.color);
     noStroke();
-    ellipse(this.x, this.y, this.r * 2);
+    ellipse(pos.x, pos.y, this.r * 2);
     fill(255);
     textAlign(CENTER, CENTER);
     textSize(28);
     textStyle(BOLD);
-    text(this.letter, this.x, this.y);
+    text(this.letter, pos.x, pos.y);
   }
   offScreen() {
-    return this.y - this.r > height;
+    let pos = this.body.position;
+    return pos.y - this.r > height;
+  }
+  removeFromWorld() {
+    World.remove(engine.world, this.body);
   }
 }
