@@ -22,7 +22,7 @@ let engine;
 let bridge; let num = 10; let radius = 10; let length = 25;
 let circles = [];
 
-let colorPalette = ["#abcd5e", "#14976b", "#2b67af", "#62b6de", "#f589a3", "#ef562f", "#fc8405", "#f9d531"]; 
+let colorPalette = ["#edafb8", "#f7e1d7", "#dedbd2", "#b0c4b1", "#8d99ae", "#ef562f", "#598392", "#e0afa0"]; 
 
 function preload() {
   // Load the handPose model
@@ -46,12 +46,21 @@ function setup() {
 
 function draw() {
   background(220);
+  // 顯示標題
+  textAlign(CENTER, TOP);
+  textSize(32);
+  fill(50, 50, 120);
+  noStroke();
+  text("淡江教育科技系", width / 2, 20);
+
   Engine.update(engine);
   strokeWeight(2);
   stroke(0);
   
   // Draw the webcam video
   image(video, 0, 0, width, height);
+
+  // 顯示標題（移到這裡）
   
   if (random() < 0.1) {
     circles.push(new Circle());
