@@ -24,6 +24,9 @@ let circles = [];
 
 let colorPalette = ["#f7e1d7", "#9d8189", "#8d99ae", "#62b6de", "#f589a3", "#81b29a", "#738290", "#cb997e"]; 
 
+let letterBalls = [];
+let letters = ["T", "K", "U", "E", "T"];
+
 function preload() {
   // Load the handPose model
   handPose = ml5.handPose({maxHands: 1, flipped: true});
@@ -61,6 +64,22 @@ function draw() {
   noStroke();
   text("淡江教育科技系", width / 2, 10);
 
+  // 產生掉落的字母球
+  if (frameCount % 30 === 0) { // 每隔幾幀掉一顆
+    let letter = random(letters);
+    let x = random(40, width - 40);
+    letterBalls.push(new LetterBall(x, -20, letter));
+  }
+
+  // 更新與顯示字母球
+  for (let i = letterBalls.length - 1; i >= 0; i--) {
+    letterBalls[i].update();
+    letterBalls[i].display();
+    if (letterBalls[i].offScreen()) {
+      letterBalls.splice(i, 1);
+    }
+  }
+
   if (random() < 0.1) {
     circles.push(new Circle());
   }
@@ -95,4 +114,34 @@ function draw() {
 function gotHands(results) {
   // save the output to the hands variable
   hands = results;
+}
+
+// 新增 LetterBall 類別
+class LetterBall {
+  constructor(x, y, letter) {
+    this.x = x;
+    this.y = y;
+    this.letter = letter;
+    this.r = 28;
+    this.vy = 0;
+    this.gravity = 0.5;
+    this.color = color(random(100,255), random(100,255), random(100,255));
+  }
+  update() {
+    this.vy += this.gravity;
+    this.y += this.vy;
+  }
+  display() {
+    fill(this.color);
+    noStroke();
+    ellipse(this.x, this.y, this.r * 2);
+    fill(255);
+    textAlign(CENTER, CENTER);
+    textSize(28);
+    textStyle(BOLD);
+    text(this.letter, this.x, this.y);
+  }
+  offScreen() {
+    return this.y - this.r > height;
+  }
 }
