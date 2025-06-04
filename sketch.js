@@ -24,9 +24,6 @@ let circles = [];
 
 let colorPalette = ["#f7e1d7", "#9d8189", "#8d99ae", "#62b6de", "#f589a3", "#81b29a", "#738290", "#cb997e"]; 
 
-let letterBalls = [];
-let letters = ["T", "K", "U", "E", "T"];
-
 function preload() {
   // Load the handPose model
   handPose = ml5.handPose({maxHands: 1, flipped: true});
@@ -64,22 +61,6 @@ function draw() {
   noStroke();
   text("淡江教育科技系", width / 2, 10);
 
-  // 產生掉落的字母球
-  if (frameCount % 30 === 0) { // 每隔幾幀掉一顆
-    let letter = random(letters);
-    let x = random(40, width - 40);
-    letterBalls.push(new LetterBall(x, -20, letter));
-  }
-
-  // 更新與顯示字母球
-  for (let i = letterBalls.length - 1; i >= 0; i--) {
-    letterBalls[i].display();
-    if (letterBalls[i].offScreen()) {
-      letterBalls[i].removeFromWorld();
-      letterBalls.splice(i, 1);
-    }
-  }
-
   if (random() < 0.1) {
     circles.push(new Circle());
   }
@@ -114,39 +95,4 @@ function draw() {
 function gotHands(results) {
   // save the output to the hands variable
   hands = results;
-}
-
-// 修改 LetterBall 類別，讓它用 Matter.js 物理引擎
-class LetterBall {
-  constructor(x, y, letter) {
-    this.letter = letter;
-    this.r = 28;
-    this.body = Bodies.circle(x, y, this.r, {
-      restitution: 0.7, // 彈力
-      friction: 0.1
-    });
-    World.add(engine.world, this.body);
-    this.color = color(random(100,255), random(100,255), random(100,255));
-  }
-  update() {
-    // 不需要手動更新位置，Matter.js 會自動處理
-  }
-  display() {
-    let pos = this.body.position;
-    fill(this.color);
-    noStroke();
-    ellipse(pos.x, pos.y, this.r * 2);
-    fill(255);
-    textAlign(CENTER, CENTER);
-    textSize(28);
-    textStyle(BOLD);
-    text(this.letter, pos.x, pos.y);
-  }
-  offScreen() {
-    let pos = this.body.position;
-    return pos.y - this.r > height;
-  }
-  removeFromWorld() {
-    World.remove(engine.world, this.body);
-  }
 }
